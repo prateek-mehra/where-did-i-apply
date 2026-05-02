@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Where did I apply?</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>Where did I apply?</h1>
+        <p id="pageState">Detecting this page...</p>
+      </div>
+      <button id="refreshButton" class="icon-button" type="button" title="Refresh detection" aria-label="Refresh detection">↻</button>
+    </header>
+
+    <main>
+      <section class="editor" aria-label="Current job">
+        <label>
+          Role Name
+          <input id="roleName" type="text" autocomplete="off" placeholder="Software Engineer">
+        </label>
+
+        <label>
+          Company Name
+          <input id="companyName" type="text" autocomplete="off" placeholder="Company">
+        </label>
+
+        <label>
+          Job Link
+          <input id="jobLink" type="url" autocomplete="off">
+        </label>
+
+        <div class="field-row">
+          <label>
+            Location
+            <input id="location" type="text" autocomplete="off" placeholder="NA">
+          </label>
+
+          <label>
+            Job Type
+            <select id="jobType">
+              <option>NA</option>
+              <option>Remote</option>
+              <option>Hybrid</option>
+              <option>In-office</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          Status
+          <select id="status">
+            <option>Pending</option>
+            <option>Applied</option>
+          </select>
+        </label>
+
+        <div class="actions">
+          <button id="saveButton" class="primary" type="button">Save Job</button>
+          <button id="deleteButton" class="danger" type="button" hidden>Delete</button>
+        </div>
+      </section>
+
+      <section class="jobs-section" aria-label="Saved jobs">
+        <div class="section-heading">
+          <h2>Saved Jobs</h2>
+          <span id="jobCount">0</span>
+        </div>
+        <div id="jobsList" class="jobs-list"></div>
+      </section>
+    </main>
+
+    <template id="jobItemTemplate">
+      <article class="job-item">
+        <div class="job-main">
+          <a class="job-title" target="_blank" rel="noreferrer"></a>
+          <p class="job-meta"></p>
+        </div>
+        <select class="job-status" aria-label="Job status">
+          <option>Pending</option>
+          <option>Applied</option>
+        </select>
+      </article>
+    </template>
+
+    <script src="constants.js"></script>
+    <script src="storage.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
