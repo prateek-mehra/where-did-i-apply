@@ -10,6 +10,9 @@
     GET_CURRENT_JOB: "GET_CURRENT_JOB",
     SAVE_JOB: "SAVE_JOB",
     GET_JOBS: "GET_JOBS",
+    IGNORE_JOB: "IGNORE_JOB",
+    JOB_PAGE_CONFIDENT: "JOB_PAGE_CONFIDENT",
+    OPEN_SAVED_JOBS: "OPEN_SAVED_JOBS",
     DELETE_JOB: "DELETE_JOB",
     UPDATE_JOB_STATUS: "UPDATE_JOB_STATUS",
     AUTO_APPLIED_DETECTED: "AUTO_APPLIED_DETECTED"
@@ -101,6 +104,32 @@
     return "NA";
   }
 
+  function inferYoe(text) {
+    const normalized = cleanText(text).toLowerCase();
+
+    if (!normalized) {
+      return "NA";
+    }
+
+    const explicitRange = normalized.match(/\b(\d{1,2})\s*(?:\+|plus|-|to)\s*(\d{1,2})?\s*(?:years?|yrs?)\b/);
+
+    if (explicitRange) {
+      return explicitRange[2] ? `${explicitRange[1]}-${explicitRange[2]} yrs` : `${explicitRange[1]}+ yrs`;
+    }
+
+    const years = normalized.match(/\b(\d{1,2})\s*(?:\+)?\s*(?:years?|yrs?)\s+(?:of\s+)?(?:relevant\s+)?experience\b/);
+
+    if (years) {
+      return normalized.includes(`${years[1]}+`) ? `${years[1]}+ yrs` : `${years[1]} yrs`;
+    }
+
+    if (/\b(entry level|new grad|graduate|fresher)\b/.test(normalized)) {
+      return "0-1 yrs";
+    }
+
+    return "NA";
+  }
+
   function isJobLikeUrl(rawUrl) {
     const url = rawUrl || "";
 
@@ -136,6 +165,7 @@
     STATUSES,
     cleanText,
     inferJobType,
+    inferYoe,
     isJobLikeUrl,
     isNonJobUrl,
     makeJobId,

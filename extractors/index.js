@@ -22,6 +22,7 @@
       jobLink: result.jobLink || location.href,
       location: result.location || "NA",
       jobType: result.jobType || "NA",
+      yoe: result.yoe || "NA",
       source: result.source || extractor.name || "generic",
       detectedAt: result.detectedAt || new Date().toISOString(),
       isJobPage: Boolean(result.isJobPage)

@@ -9,14 +9,16 @@
   <body>
     <header class="app-header">
       <div>
-        <h1>Where did I apply?</h1>
+        <h1><a id="savedJobsLink" href="#">Where did I apply?</a></h1>
         <p id="pageState">Detecting this page...</p>
       </div>
-      <button id="refreshButton" class="icon-button" type="button" title="Refresh detection" aria-label="Refresh detection">↻</button>
+      <div class="header-actions">
+        <button id="refreshButton" class="icon-button" type="button" title="Refresh detection" aria-label="Refresh detection">↻</button>
+      </div>
     </header>
 
     <main>
-      <section class="editor" aria-label="Current job">
+      <form id="jobForm" class="editor" aria-label="Current job">
         <label>
           Role Name
           <input id="roleName" type="text" autocomplete="off" placeholder="Software Engineer">
@@ -50,6 +52,11 @@
         </div>
 
         <label>
+          YOE
+          <input id="yoe" type="text" autocomplete="off" placeholder="NA">
+        </label>
+
+        <label>
           Status
           <select id="status">
             <option>Pending</option>
@@ -58,32 +65,13 @@
         </label>
 
         <div class="actions">
-          <button id="saveButton" class="primary" type="button">Save Job</button>
+          <button id="saveButton" class="primary" type="submit">Save Job</button>
+          <button id="ignoreButton" type="button">Ignore</button>
           <button id="deleteButton" class="danger" type="button" hidden>Delete</button>
         </div>
-      </section>
+      </form>
 
-      <section class="jobs-section" aria-label="Saved jobs">
-        <div class="section-heading">
-          <h2>Saved Jobs</h2>
-          <span id="jobCount">0</span>
-        </div>
-        <div id="jobsList" class="jobs-list"></div>
-      </section>
     </main>
-
-    <template id="jobItemTemplate">
-      <article class="job-item">
-        <div class="job-main">
-          <a class="job-title" target="_blank" rel="noreferrer"></a>
-          <p class="job-meta"></p>
-        </div>
-        <select class="job-status" aria-label="Job status">
-          <option>Pending</option>
-          <option>Applied</option>
-        </select>
-      </article>
-    </template>
 
     <script src="constants.js"></script>
     <script src="storage.js"></script>

@@ -11,6 +11,20 @@
     });
   }
 
+  function getIgnoredJobs() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get({ ignoredJobs: {} }, (result) => {
+        resolve(result.ignoredJobs || {});
+      });
+    });
+  }
+
+  function setIgnoredJobs(ignoredJobs) {
+    return new Promise((resolve) => {
+      chrome.storage.local.set({ ignoredJobs }, resolve);
+    });
+  }
+
   function setAllJobs(jobs) {
     return new Promise((resolve) => {
       chrome.storage.local.set({ jobs }, resolve);
@@ -38,6 +52,7 @@
       normalizedJobLink,
       location: constants.cleanText(jobInput.location) || existing.location || "NA",
       jobType: constants.JOB_TYPES.includes(jobInput.jobType) ? jobInput.jobType : existing.jobType || "NA",
+      yoe: constants.cleanText(jobInput.yoe) || existing.yoe || "NA",
       status,
       source: jobInput.source || existing.source || "manual",
       createdAt: existing.createdAt || now,
@@ -88,10 +103,35 @@
     return updated;
   }
 
+  async function ignoreJob(jobLink) {
+    const normalizedJobLink = constants.normalizeUrl(jobLink);
+
+    if (!normalizedJobLink) {
+      return null;
+    }
+
+    const ignoredJobs = await getIgnoredJobs();
+    const ignored = {
+      normalizedJobLink,
+      ignoredAt: new Date().toISOString()
+    };
+
+    ignoredJobs[normalizedJobLink] = ignored;
+    await setIgnoredJobs(ignoredJobs);
+    return ignored;
+  }
+
+  async function isIgnoredJob(jobLink) {
+    const ignoredJobs = await getIgnoredJobs();
+    return Boolean(ignoredJobs[constants.normalizeUrl(jobLink)]);
+  }
+
   globalThis.WdiaStorage = {
     deleteJob,
     getAllJobs,
     getJobByUrl,
+    ignoreJob,
+    isIgnoredJob,
     setAllJobs,
     updateJobStatus,
     upsertJob

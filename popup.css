@@ -32,6 +32,11 @@ select {
   border-bottom: 1px solid #e4e7ec;
 }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
 h1,
 h2,
 p {
@@ -41,6 +46,16 @@ p {
 h1 {
   font-size: 18px;
   line-height: 1.2;
+}
+
+h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1 a:hover {
+  color: #2158d6;
+  text-decoration: underline;
 }
 
 #pageState {
@@ -53,16 +68,11 @@ main {
   padding: 14px;
 }
 
-.editor,
-.jobs-section {
+.editor {
   background: #ffffff;
   border: 1px solid #e4e7ec;
   border-radius: 8px;
   padding: 12px;
-}
-
-.jobs-section {
-  margin-top: 12px;
 }
 
 label {
@@ -98,8 +108,7 @@ button:focus {
   gap: 10px;
 }
 
-.actions,
-.section-heading {
+.actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -121,7 +130,7 @@ button:hover {
 }
 
 .primary {
-  flex: 1;
+  flex: 1 1 auto;
   border-color: #2158d6;
   background: #2158d6;
   color: #ffffff;
@@ -136,6 +145,10 @@ button:hover {
   color: #b42318;
 }
 
+#ignoreButton {
+  color: #475467;
+}
+
 .icon-button {
   width: 34px;
   padding: 0;
@@ -143,68 +156,8 @@ button:hover {
   line-height: 1;
 }
 
-.section-heading {
-  margin-bottom: 10px;
-}
-
-h2 {
-  font-size: 14px;
-}
-
-#jobCount {
-  min-width: 24px;
-  border-radius: 999px;
-  background: #eef2ff;
-  color: #2f4a9d;
-  padding: 2px 8px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.jobs-list {
-  display: grid;
-  gap: 8px;
-  max-height: 260px;
-  overflow: auto;
-}
-
 .empty-state {
   color: #667085;
   font-size: 13px;
   line-height: 1.4;
-}
-
-.job-item {
-  display: grid;
-  grid-template-columns: 1fr 112px;
-  gap: 8px;
-  align-items: center;
-  padding: 9px;
-  border: 1px solid #eaecf0;
-  border-radius: 8px;
-  background: #fbfcfe;
-}
-
-.job-title {
-  display: block;
-  color: #172033;
-  font-weight: 750;
-  line-height: 1.25;
-  text-decoration: none;
-}
-
-.job-title:hover {
-  text-decoration: underline;
-}
-
-.job-meta {
-  margin-top: 4px;
-  color: #667085;
-  font-size: 12px;
-  line-height: 1.3;
-}
-
-.job-status {
-  min-height: 32px;
 }

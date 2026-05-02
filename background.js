@@ -5,6 +5,7 @@ importScripts("constants.js", "storage.js");
 
   const { MESSAGES, isJobLikeUrl } = globalThis.WdiaConstants;
   const storage = globalThis.WdiaStorage;
+  const autoOpenedTabs = new Map();
 
   function sendAsyncResponse(promise, sendResponse) {
     promise
@@ -25,6 +26,41 @@ importScripts("constants.js", "storage.js");
     );
   }
 
+  async function openJobDetailsPopup(job, sender) {
+    const tab = sender && sender.tab;
+
+    if (!tab || !tab.id || !job || !job.jobLink || !job.isJobPage) {
+      return false;
+    }
+
+    if (await storage.isIgnoredJob(job.jobLink)) {
+      return false;
+    }
+
+    const normalizedJobLink = globalThis.WdiaConstants.normalizeUrl(job.jobLink);
+    const lastOpened = autoOpenedTabs.get(tab.id);
+
+    if (lastOpened === normalizedJobLink) {
+      return false;
+    }
+
+    autoOpenedTabs.set(tab.id, normalizedJobLink);
+    await chrome.action.setPopup({ tabId: tab.id, popup: "popup.html" });
+
+    if (chrome.action.openPopup) {
+      await chrome.action.openPopup({ windowId: tab.windowId });
+      return true;
+    }
+
+    return false;
+  }
+
+  function openSavedJobsTab() {
+    return new Promise((resolve) => {
+      chrome.tabs.create({ url: chrome.runtime.getURL("saved-jobs.html") }, resolve);
+    });
+  }
+
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!message || !message.type) {
       return false;
@@ -36,6 +72,15 @@ importScripts("constants.js", "storage.js");
 
       case MESSAGES.GET_JOBS:
         return sendAsyncResponse(storage.getAllJobs(), sendResponse);
+
+      case MESSAGES.IGNORE_JOB:
+        return sendAsyncResponse(storage.ignoreJob(message.jobLink), sendResponse);
+
+      case MESSAGES.JOB_PAGE_CONFIDENT:
+        return sendAsyncResponse(openJobDetailsPopup(message.job, sender), sendResponse);
+
+      case MESSAGES.OPEN_SAVED_JOBS:
+        return sendAsyncResponse(openSavedJobsTab(), sendResponse);
 
       case MESSAGES.SAVE_JOB:
         if (!isSavableJob(message.job)) {

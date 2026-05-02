@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Where did I apply?</title>
+    <link rel="stylesheet" href="saved-jobs.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div>
+        <h1>Where did I apply?</h1>
+        <p><span id="jobCount">0</span> tracked applications</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="filters" aria-label="Saved jobs filters">
+        <label>
+          Role
+          <input id="roleFilter" type="search" autocomplete="off" placeholder="Filter role">
+        </label>
+        <label>
+          Location
+          <input id="locationFilter" type="search" autocomplete="off" placeholder="Filter location">
+        </label>
+        <label>
+          Status
+          <select id="statusFilter">
+            <option value="">All</option>
+            <option>Pending</option>
+            <option>Applied</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="table-wrap" aria-label="Saved jobs table">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Role</th>
+              <th>Company</th>
+              <th>Source</th>
+              <th>Location</th>
+              <th>Job Type</th>
+              <th>YOE</th>
+              <th>Status</th>
+              <th>Last Updated At</th>
+              <th aria-label="Row actions"></th>
+            </tr>
+          </thead>
+          <tbody id="jobsTableBody"></tbody>
+        </table>
+        <p id="emptyState" class="empty-state" hidden>No saved jobs match these filters.</p>
+      </section>
+    </main>
+
+    <script src="constants.js"></script>
+    <script src="saved-jobs.js"></script>
+  </body>
+</html>

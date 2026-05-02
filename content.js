@@ -7,6 +7,8 @@
   let latestJob = null;
   let extractionTimer = null;
   let lastAutoAppliedAt = 0;
+  let confidenceTimer = null;
+  let lastPromptedUrl = "";
   let lastUrl = location.href;
 
   function hasUsefulJobData(job) {
@@ -44,7 +46,37 @@
 
   function scheduleExtraction(delay) {
     window.clearTimeout(extractionTimer);
-    extractionTimer = window.setTimeout(extractNow, delay);
+    extractionTimer = window.setTimeout(() => {
+      extractNow();
+      scheduleConfidenceCheck(700);
+    }, delay);
+  }
+
+  function isConfidentJobPage(job) {
+    return Boolean(
+      hasUsefulJobData(job) &&
+        job.isJobPage &&
+        job.roleName &&
+        (job.companyName || job.source !== "generic")
+    );
+  }
+
+  function scheduleConfidenceCheck(delay) {
+    window.clearTimeout(confidenceTimer);
+    confidenceTimer = window.setTimeout(() => {
+      const job = latestJob || extractNow();
+      const normalizedUrl = constants.normalizeUrl(job && job.jobLink);
+
+      if (!normalizedUrl || normalizedUrl === lastPromptedUrl || !isConfidentJobPage(job)) {
+        return;
+      }
+
+      lastPromptedUrl = normalizedUrl;
+      chrome.runtime.sendMessage({
+        type: MESSAGES.JOB_PAGE_CONFIDENT,
+        job
+      });
+    }, delay);
   }
 
   function getElementLabel(element) {
@@ -180,6 +212,7 @@
     const observer = new MutationObserver(() => {
       if (location.href !== lastUrl) {
         lastUrl = location.href;
+        lastPromptedUrl = "";
         scheduleExtraction(250);
         return;
       }
@@ -210,5 +243,10 @@
   document.addEventListener("submit", handleSubmit, true);
 
   extractNow();
+  if (document.readyState === "complete") {
+    scheduleConfidenceCheck(900);
+  } else {
+    window.addEventListener("load", () => scheduleConfidenceCheck(900), { once: true });
+  }
   observeSpaChanges();
 })();

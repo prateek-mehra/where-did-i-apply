@@ -184,6 +184,7 @@
       jobLink: location.href,
       location: locationText || "NA",
       jobType: constants.inferJobType(`${locationText} ${pageText}`),
+      yoe: constants.inferYoe(pageText),
       source: "generic",
       detectedAt: new Date().toISOString(),
       isJobPage: pageLooksLikeJob()
